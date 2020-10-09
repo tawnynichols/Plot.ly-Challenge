@@ -1,32 +1,32 @@
 // Fetch the JSON data and console log it
 d3.json("samples.json").then(function(importedData) {
     // console.log(importedData.names);
-    console.log(importedData)
-        // console.log(importedData.samples.otu_ids)
-        // console.log(importedData.samples[0].sample_values)
+    //console.log(importedData)
+    // console.log(importedData.samples.otu_ids)
+    // console.log(importedData.samples[0].sample_values)
 
     // Use the map method with the arrow function to return all the filtered movie titles.
-    var ids = importedData.samples.map(d => d.otu_ids);
-    console.log(ids)
+    var ids = importedData.samples[0].otu_ids;
 
     // Get top 10 ids
-    var top10_ids = ids.slice(0, 10)
+    var top10_ids = (importedData.samples[0].otu_ids.slice(0, 10)).reverse();
 
     // add text to lable for plot
     var get_ids = top10_ids.map(d => "OUT " + d)
-    console.log(top10_ids)
+    console.log(get_ids)
 
 
     // Use the map method with the arrow function to return all the filtered movie metascores.
-    var values = importedData.samples.map(d => d.sample_values);
+    var values = importedData.samples[0].sample_values.slice(0, 10).reverse();
 
     // Get to 10 values
-    var top10_values = values.slice(0, 10)
-    console.log(top10_values)
+    var top10_values = values.slice(0, 10).reverse()
+    console.log(top10_values[0])
 
 
     // create labels
-    var labels = importedData.samples.map(d => d.otu_labels)
+    var labels = importedData.samples[0].otu_labels.slice(0, 10);
+    console.log(labels)
 
     // Create title
     var id_title = importedData.names[0]
@@ -35,9 +35,11 @@ d3.json("samples.json").then(function(importedData) {
 
         // Create your trace.
         var trace = {
-            x: top10_values[0],
-            y: get_ids[0],
-            type: "bar"
+            x: values,
+            y: get_ids,
+            text: labels,
+            type: "bar",
+            orientation: "h"
         };
 
         // Create the data array for our plot
@@ -45,10 +47,11 @@ d3.json("samples.json").then(function(importedData) {
 
         // Define the plot layout
         var layout = {
-            title: "Top 10 OUT",
-            xaxis: { title: "otu_ids" },
-            yaxis: { title: "Sample Values" }
-        };
+            title: "title",
+            yaxis: {
+                tickmode: "linear",
+            }
+        }
 
         // Plot the chart to a div tag with id "bar-plot"
         Plotly.newPlot("bar", data, layout);
