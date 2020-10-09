@@ -1,37 +1,37 @@
-// Fetch the JSON data and console log it
-d3.json("samples.json").then(function(importedData) {
-    // console.log(importedData.names);
-    //console.log(importedData)
-    // console.log(importedData.samples.otu_ids)
-    // console.log(importedData.samples[0].sample_values)
+function getValues(id) {
 
-    // Use the map method with the arrow function to return all the filtered movie titles.
-    var ids = importedData.samples[0].otu_ids;
+    // Fetch the JSON data and console log it
+    d3.json("samples.json").then(function(importedData) {
+        // console.log(importedData.names);
+        //console.log(importedData)
+        // console.log(importedData.samples.otu_ids)
+        // console.log(importedData.samples[0].sample_values)
 
-    // Get top 10 ids
-    var top10_ids = (importedData.samples[0].otu_ids.slice(0, 10)).reverse();
+        // Use the map method with the arrow function to return all the filtered movie titles.
+        var ids = importedData.samples[0].otu_ids;
 
-    // add text to lable for plot
-    var get_ids = top10_ids.map(d => "OUT " + d)
-    console.log(get_ids)
+        // Get top 10 ids
+        var top10_ids = (importedData.samples[0].otu_ids.slice(0, 10)).reverse();
 
-
-    // Use the map method with the arrow function to return all the filtered movie metascores.
-    var values = importedData.samples[0].sample_values.slice(0, 10).reverse();
-
-    // Get to 10 values
-    var top10_values = values.slice(0, 10).reverse()
-    console.log(top10_values[0])
+        // add text to lable for plot
+        var get_ids = top10_ids.map(d => "OUT " + d)
+        console.log(get_ids)
 
 
-    // create labels
-    var labels = importedData.samples[0].otu_labels.slice(0, 10);
-    console.log(labels)
+        // Use the map method with the arrow function to return all the filtered movie metascores.
+        var values = importedData.samples[0].sample_values.slice(0, 10).reverse();
 
-    // Create title
-    var id_title = importedData.names[0]
+        // Get to 10 values
+        var top10_values = values.slice(0, 10).reverse()
+        console.log(top10_values[0])
 
-    function init() {
+
+        // create labels
+        var labels = importedData.samples[0].otu_labels.slice(0, 10);
+        console.log(labels)
+
+        // Create title
+        var id_title = importedData.names[0]
 
         // Create your trace.
         var trace = {
@@ -51,40 +51,59 @@ d3.json("samples.json").then(function(importedData) {
             yaxis: {
                 tickmode: "linear",
             }
-        }
+        };
 
-        // Plot the chart to a div tag with id "bar-plot"
+        // Plot the chart to a div tag with id "bar"
         Plotly.newPlot("bar", data, layout);
 
-    }
+    })
+}
 
-    // On change to the DOM, call getData()
-    d3.selectAll("#selDataset").on("change", getData);
+// // On change to the DOM, call getData()
+// d3.selectAll("#selDataset").on("change", getData);
 
-    // Function called by DOM changes
-    function getData(id) {
-        var dropdownMenu = d3.select("#selDataset");
-        // Assign the value of the dropdown menu option to a variable
-        var dataset = dropdownMenu.property("value");
-        // Initialize an empty array for the country's data
-        var data = [];
+// Function called by DOM changes
+function getData(id) {
+    d3.json("sampe.json").then((data) => {
+        var demoData = data.metadata;
+        console.log(demoData)
 
-        if (dataset == '940') {
-            importedData = 940;
-        } else if (dataset == 'uk') {
-            data = uk;
-        } else if (dataset == 'canada') {
-            data = canada;
-        }
-        // Call function to update the chart
-        updatePlotly(data);
-    }
+        // define variable to filter data
+        var info = demoData.filter(d => d.id.toString() === id)[0];
 
-    // Update the restyled plot's values
-    function updatePlotly(newdata) {
-        Plotly.restyle("bar", "values", [newdata]);
-    }
+        // select demographic data
+        var demoInfo = d3.select("#sample-metdata");
 
-    init();
+        // get demographic data for the id and append to panel
+        Object.defineProperties(info).foreach((key) => {
+            demoInfo.append("h5").text(key[0].toUperCase() + ": " + key[1] + "\n")
+        })
+    })
 
-});
+}
+
+// Update the restyled plot's values
+function updatePlotly(newdata) {
+    Plotly.restyle("bar", "values", [newdata]);
+}
+
+
+function init() {
+    // Assign the value of the dropdown menu option to a variable
+    var dropdownMenu = d3.select("#selDataset");
+
+    // read the data 
+    d3.json("samples.json").then((data) => {
+        console.log(data)
+
+        //get ids for dropdow
+        data.names.forEach(function(name) {
+                dropdownMenu.append("option").text(name).property("value");
+            }
+
+        )
+
+    })
+}
+
+init();
