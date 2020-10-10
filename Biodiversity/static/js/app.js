@@ -9,6 +9,7 @@ function getValues(id) {
 
         // Use the map method with the arrow function to return all the filtered movie titles.
         var ids = importedData.samples[0].otu_ids;
+        var sampleValues = importedData.samples[0].sample_values
 
         // Get top 10 ids
         var top10_ids = (importedData.samples[0].otu_ids.slice(0, 10)).reverse();
@@ -50,6 +51,29 @@ function getValues(id) {
         // Plot the chart to a div tag with id "bar"
         Plotly.newPlot("bar", data, layout);
 
+        // Create data array for bubble chart
+        var trace1 = {
+            x: ids,
+            y: sampleValues,
+            mode: "markers",
+            marker: {
+                size: sampleValues,
+                color: ids
+            },
+            text: importedData.samples[0].otu_labels
+
+        };
+
+        var data1 = [trace1];
+        //Creat layout of bubble chart
+        var layout1 = {
+            xaxis: { title: "OTU ID" },
+            height: 800,
+            width: 1200
+        };
+
+        //Plot bubble chart
+        Plotly.newPlot("bubble", data1, layout1);
     })
 }
 
@@ -64,6 +88,9 @@ function getData(id) {
 
         // select demographic data
         var demoInfo = d3.select("#sample-metadata");
+
+        //clear demographic info before update
+        demoInfo.html("");
 
         // get demographic data for the id and append to panel
         Object.entries(info).forEach((key) => {
