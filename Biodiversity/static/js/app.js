@@ -74,6 +74,7 @@ function getValues(id) {
 
         //Plot bubble chart
         Plotly.newPlot("bubble", data1, layout1);
+
     })
 }
 
@@ -95,7 +96,136 @@ function getData(id) {
         // get demographic data for the id and append to panel
         Object.entries(info).forEach((key) => {
             demoInfo.append("h5").text(key[0].toUpperCase() + ": " + key[1]);
+
+
         });
+
+        //Create gauge chart
+        // var data2 = [{
+        //     type: "indicator",
+        //     mode: "gauge+neddle",
+        //     value: info.wfreq,
+        //     title: { text: "Speed", font: { size: 24 } },
+        //     //delta: { reference: 9, increasing: { color: "RebeccaPurple" } },
+        //     gauge: {
+        //         axis: { range: [null, 9], tickwidth: 1, tickcolor: "red" },
+        //         // lables: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        //         bar: { color: "red" },
+        //         textposition: "inside",
+        //         //bgcolor: "white",
+        //         //borderwidth: 2,
+        //         //bordercolor: "gray",
+        //         steps: [
+        //                 { range: [0, 1], color: "#f1f1d2" },
+        //                 { range: [1, 2], color: "#dae7bd" },
+        //                 { range: [2, 3], color: "#c5dea8" },
+        //                 { range: [3, 4], color: "#b2d494" },
+        //                 { range: [4, 5], color: "#9fc97f" },
+        //                 { range: [5, 6], color: "#8ebe6b" },
+        //                 { range: [6, 7], color: "#7fb356" },
+        //                 { range: [7, 8], color: "#73a842" },
+        //                 { range: [8, 9], color: "#699c2b" }
+        //             ]
+        //             // ,
+        //             // threshold: {
+        //             //     line: { color: "red", width: 4 },
+        //             //     thickness: 0.75,
+        //             //     value: 490
+        //             // }
+        //     }
+        // }];
+
+        //Crete layout for gauge chart
+        // var layout2 = {
+        //     width: 500,
+        //     height: 400,
+        //     margin: { t: 25, r: 25, l: 25, b: 25 },
+        //     paper_bgcolor: "lavender",
+        //     font: { color: "darkblue", family: "Arial" }
+        // };
+
+        // Enter a speed between 0 and 180
+        var level = info.wfreq * 20.5 //info.wfreq;
+
+        // Trig to calc meter point
+        var degrees = 180 - level,
+            radius = .5;
+        var radians = degrees * Math.PI / 180;
+        var x = radius * Math.cos(radians);
+        var y = radius * Math.sin(radians);
+        var path1 = (degrees < 45 || degrees > 135) ? 'M -0.0 -0.025 L 0.0 0.025 L ' : 'M -0.025 -0.0 L 0.025 0.0 L ';
+        // Path: may have to change to create a better triangle
+        var mainPath = path1,
+            pathX = String(x),
+            space = ' ',
+            pathY = String(y),
+            pathEnd = ' Z';
+        var path = mainPath.concat(pathX, space, pathY, pathEnd);
+
+        var data2 = [{
+                type: 'scatter',
+                x: [0],
+                y: [0],
+                marker: { size: 14, color: '850000' },
+                showlegend: false,
+                name: 'speed',
+                text: level,
+                hoverinfo: 'text+name'
+            },
+            {
+                values: [1, 1, 1, 1, 1, 1, 1, 1, 1, 9],
+                rotation: 90,
+                text: ['8-9', '7-8', '6-7', '5-6', '4-5', '3-4', '2-3', '1-2', '0-1', ''],
+                textinfo: 'text',
+                textposition: 'inside',
+                marker: {
+                    colors: ['#699c2b', '#73a842',
+                        '#7fb356', '#8ebe6b', '#9fc97f', '#b2d494', '#c5dea8', '#dae7bd', '#f1f1d2',
+                        'rgba(0, 0, 0, 0)'
+                    ]
+                },
+                hoverinfo: 'label',
+                hole: .5,
+                type: 'pie',
+                showlegend: false
+            }
+        ];
+
+        var layout2 = {
+            shapes: [{
+                type: 'path',
+                path: path,
+                fillcolor: '850000',
+                line: {
+                    color: '850000'
+                }
+            }],
+            title: "Belly Button Washing Frequency",
+            subtitle: 'Plot Subtitle',
+            height: 400,
+            width: 400,
+            xaxis: {
+                zeroline: false,
+                showticklabels: false,
+                showgrid: false,
+                range: [-1, 1],
+                titlefont: {
+                    title: 'x Axis',
+                    family: 'Courier New, monospace',
+                    size: 18,
+                    color: '#7f7f7f'
+                }
+            },
+            yaxis: {
+                zeroline: false,
+                showticklabels: false,
+                showgrid: false,
+                range: [-1, 1]
+            }
+        };
+
+        //Plot gauge chart
+        Plotly.newPlot('gauge', data2, layout2);
     });
 
 }
