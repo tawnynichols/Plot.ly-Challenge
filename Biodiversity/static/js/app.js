@@ -2,10 +2,6 @@ function getValues(id) {
 
     // Fetch the JSON data and console log it
     d3.json("samples.json").then(importedData => {
-        // console.log(importedData.names);
-        //console.log(importedData)
-        // console.log(importedData.samples.otu_ids)
-        // console.log(importedData.samples[0].sample_values)
 
         // Use the map method with the arrow function to return all the filtered movie titles.
         var ids = importedData.samples[0].otu_ids;
@@ -16,17 +12,12 @@ function getValues(id) {
 
         // add text to lable for plot
         var get_ids = top10_ids.map(d => "OUT " + d)
-            // console.log(get_ids)
 
         // Use the map method with the arrow function to return all the filtered movie metascores.
         var values = importedData.samples[0].sample_values.slice(0, 10).reverse();
 
         // create labels
         var labels = importedData.samples[0].otu_labels.slice(0, 10);
-        // console.log(labels)
-
-        // Create title
-        var id_title = importedData.names[0]
 
         // Create your trace.
         var trace = {
@@ -82,7 +73,6 @@ function getValues(id) {
 function getData(id) {
     d3.json("samples.json").then((data) => {
         var demoData = data.metadata;
-        console.log(demoData)
 
         // define variable to filter data
         var info = demoData.filter(d => d.id.toString() === id)[0];
@@ -100,50 +90,6 @@ function getData(id) {
 
         });
 
-        //Create gauge chart
-        // var data2 = [{
-        //     type: "indicator",
-        //     mode: "gauge+neddle",
-        //     value: info.wfreq,
-        //     title: { text: "Speed", font: { size: 24 } },
-        //     //delta: { reference: 9, increasing: { color: "RebeccaPurple" } },
-        //     gauge: {
-        //         axis: { range: [null, 9], tickwidth: 1, tickcolor: "red" },
-        //         // lables: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        //         bar: { color: "red" },
-        //         textposition: "inside",
-        //         //bgcolor: "white",
-        //         //borderwidth: 2,
-        //         //bordercolor: "gray",
-        //         steps: [
-        //                 { range: [0, 1], color: "#f1f1d2" },
-        //                 { range: [1, 2], color: "#dae7bd" },
-        //                 { range: [2, 3], color: "#c5dea8" },
-        //                 { range: [3, 4], color: "#b2d494" },
-        //                 { range: [4, 5], color: "#9fc97f" },
-        //                 { range: [5, 6], color: "#8ebe6b" },
-        //                 { range: [6, 7], color: "#7fb356" },
-        //                 { range: [7, 8], color: "#73a842" },
-        //                 { range: [8, 9], color: "#699c2b" }
-        //             ]
-        //             // ,
-        //             // threshold: {
-        //             //     line: { color: "red", width: 4 },
-        //             //     thickness: 0.75,
-        //             //     value: 490
-        //             // }
-        //     }
-        // }];
-
-        //Crete layout for gauge chart
-        // var layout2 = {
-        //     width: 500,
-        //     height: 400,
-        //     margin: { t: 25, r: 25, l: 25, b: 25 },
-        //     paper_bgcolor: "lavender",
-        //     font: { color: "darkblue", family: "Arial" }
-        // };
-
         // Enter a speed between 0 and 180
         var level = info.wfreq * 20.5 //info.wfreq;
 
@@ -154,7 +100,7 @@ function getData(id) {
         var x = radius * Math.cos(radians);
         var y = radius * Math.sin(radians);
         var path1 = (degrees < 45 || degrees > 135) ? 'M -0.0 -0.025 L 0.0 0.025 L ' : 'M -0.025 -0.0 L 0.025 0.0 L ';
-        // Path: may have to change to create a better triangle
+
         var mainPath = path1,
             pathX = String(x),
             space = ' ',
@@ -162,6 +108,7 @@ function getData(id) {
             pathEnd = ' Z';
         var path = mainPath.concat(pathX, space, pathY, pathEnd);
 
+        // Create scatter plot for gauge
         var data2 = [{
                 type: 'scatter',
                 x: [0],
@@ -191,6 +138,7 @@ function getData(id) {
             }
         ];
 
+        // Create layout for gauge
         var layout2 = {
             shapes: [{
                 type: 'path',
@@ -243,7 +191,6 @@ function init() {
 
     // read the data 
     d3.json("samples.json").then((data) => {
-        console.log(data)
 
         //get ids for dropdow
         data.names.forEach(function(name) {
